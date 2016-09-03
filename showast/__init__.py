@@ -1,5 +1,7 @@
 import ast
 import os
+import inspect
+import re
 from math import sqrt, ceil
 from base64 import b64encode
 
@@ -16,6 +18,9 @@ try:
 except ImportError:
     from tkinter import Tk, IntVar
 
+    
+__all__ = ['show_ast', 'show_source']
+    
 
 SCALE = 1.9
 
@@ -113,10 +118,33 @@ def tree_image(tree):
         except (IOError, WindowsError):
             pass
         
+        
+def show_ast(module):
+    if len(module.body) == 1:
+        treestring = nltk_treestring(module.body[0])
+    else:
+        treestring = nltk_treestring(module)
+    tree_image(treestring)
+        
 
 @register_cell_magic
 def showast(__, cell):
     m = ast.parse(cell)
-    treestring = nltk_treestring(m.body[0] if len(m.body) == 1 else m)
-    tree_image(treestring)
-    return
+    show_ast(m)
+
+
+def show_source(item):
+    src = inspect.getsource(item)
+    try:
+        module = ast.parse(src)
+    except IndentationError:
+        initial_whitespace = re.match(r'^\s+', src)
+        if initial_whitespace is not None:
+            amt_whitespace = len(initial_whitespace.group())
+            src = '\n'.join(
+                line[amt_whitespace:]
+                for line in
+                src.splitlines()
+            )
+        module = ast.parse(src)
+    show_ast(ast.parse(src))
