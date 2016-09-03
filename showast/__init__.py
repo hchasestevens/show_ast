@@ -19,10 +19,15 @@ except ImportError:
     from tkinter import Tk, IntVar
 
     
-__all__ = ['show_ast', 'show_source']
+__all__ = ['show_ast', 'show_source', 'Settings']
     
 
-SCALE = 1.9
+Settings = dict(
+    scale=1.9,
+    font='courier',
+    terminal_color='#008040',
+    nonterminal_color='#004080',
+)
 
 
 def nltk_treestring(node):
@@ -69,8 +74,8 @@ class SizableTreeView(TreeView):
         # Size is variable.
         self._size = IntVar(self._top)
         self._size.set(12)
-        bold = ('courier', -int(12 * SCALE), 'bold')
-        helv = ('courier', -int(12 * SCALE))
+        bold = (Settings['font'], -int(12 * Settings['scale']), 'bold')
+        norm = (Settings['font'], -int(12 * Settings['scale']))
 
         # Lay the trees out in a square.
         self._width = int(ceil(sqrt(len(trees))))
@@ -80,15 +85,15 @@ class SizableTreeView(TreeView):
                 cf.canvas(), 
                 tree, 
                 node_font=bold,
-                leaf_color='#008040', 
-                node_color='#004080',
+                leaf_color=Settings['terminal_color'], 
+                node_color=Settings['nonterminal_color'],
                 roof_color='#004040', 
                 roof_fill='white',
                 line_color='#004040', 
-                leaf_font=helv,
+                leaf_font=norm,
             )
-            widget['xspace'] = int(SCALE * widget['xspace'])
-            widget['yspace'] = int(SCALE * widget['yspace'])
+            widget['xspace'] = int(Settings['scale'] * widget['xspace'])
+            widget['yspace'] = int(Settings['scale'] * widget['yspace'])
             self._widgets.append(widget)
             cf.add_widget(widget, 0, 0)
 
