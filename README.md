@@ -18,7 +18,7 @@ nltk
 pillow
 ```
 
-Additionally, you will need to have [Ghostscript](http://ghostscript.com/download/) installed.
+Additionally, you will need to have [Ghostscript](http://ghostscript.com/download/gsdnld.html) installed.
 
 Contacts
 --------
