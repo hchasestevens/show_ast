@@ -18,6 +18,8 @@ nltk
 pillow
 ```
 
+Additionally, you will need to have [Ghostscript](http://ghostscript.com/download/) installed.
+
 Contacts
 --------
 
