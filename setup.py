@@ -3,7 +3,7 @@ from setuptools import setup
 setup(
     name='showast',
     packages=['showast'],
-    version='0.1.0',
+    version='0.1.1',
     description = 'IPython notebook plugin for visualizing abstract syntax trees.',
     license='MIT',
     author='H. Chase Stevens',
