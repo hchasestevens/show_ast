@@ -23,10 +23,11 @@ __all__ = ['show_ast', 'show_source', 'Settings']
     
 
 Settings = dict(
-    scale=1.9,
+    scale=2,
     font='courier',
     terminal_color='#008040',
     nonterminal_color='#004080',
+    omit_module=True,
 )
 
 
@@ -125,7 +126,7 @@ def tree_image(tree):
         
         
 def show_ast(module):
-    if len(module.body) == 1:
+    if Settings['omit_module'] and len(module.body) == 1:
         treestring = nltk_treestring(module.body[0])
     else:
         treestring = nltk_treestring(module)
