@@ -5,6 +5,16 @@ Example usage
 --------------
 Examples can be found in [this IPython notebook](https://github.com/hchasestevens/show_ast/blob/master/Example.ipynb).
 
+```python
+import showast
+```
+
+```python
+%%showast
+print 1 + 2
+```
+![print 1 + 2 AST](http://i.imgur.com/DCXbiOK.png)
+
 Installation
 -------------
 ```
