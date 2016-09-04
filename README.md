@@ -15,6 +15,13 @@ print 1 + 2
 ```
 ![print 1 + 2 AST](http://i.imgur.com/DCXbiOK.png)
 
+```python
+from showast import show_source
+import antigravity
+show_source(antigravity)
+```
+![antigravity module AST](http://i.imgur.com/nvnQBr3.png)
+
 Installation
 -------------
 ```
