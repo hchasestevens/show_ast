@@ -17,6 +17,11 @@ try:
     from Tkinter import Tk, IntVar
 except ImportError:
     from tkinter import Tk, IntVar
+    
+try:
+    _basestring = basestring
+except NameError:
+    _basestring = str
 
     
 __all__ = ['show_ast', 'show_source', 'Settings']
@@ -61,7 +66,7 @@ def nltk_treestring(node):
                 for item in v
             )
             
-        elif isinstance(v, basestring):
+        elif isinstance(v, _basestring):
             fields.append('"{}"'.format(v))
                 
         elif v is not None:
