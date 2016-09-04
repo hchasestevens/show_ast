@@ -3,7 +3,7 @@ from setuptools import setup
 setup(
     name='showast',
     packages=['showast'],
-    version='0.1.1',
+    version='0.1.2',
     description = 'IPython notebook plugin for visualizing abstract syntax trees.',
     license='MIT',
     author='H. Chase Stevens',
@@ -25,5 +25,7 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
         'Topic :: Software Development :: Code Generators',
+        'Framework :: IPython',
+        'Topic :: Multimedia :: Graphics :: Presentation',
     ]
 )

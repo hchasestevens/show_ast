@@ -28,7 +28,17 @@ Settings = dict(
     terminal_color='#008040',
     nonterminal_color='#004080',
     omit_module=True,
+    omit_docstrings=True,
 )
+
+
+def strip_docstring(body):
+    if not Settings['omit_docstrings']:
+        return body
+    first = body[0]
+    if isinstance(first, ast.Expr) and isinstance(first.value, ast.Str):
+        return body[1:]
+    return body
 
 
 def nltk_treestring(node):
@@ -42,6 +52,8 @@ def nltk_treestring(node):
             fields.append(nltk_treestring(v))
         
         elif isinstance(v, list):
+            if isinstance(node, (ast.FunctionDef, ast.ClassDef)) and k == 'body':
+                v = strip_docstring(v)
             fields.extend(
                 nltk_treestring(item)
                 if isinstance(item, ast.AST)
