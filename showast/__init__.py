@@ -83,9 +83,13 @@ def nltk_treestring(node, omit_docstrings=True):
     )
 
 
-def attach_to_parent(parent, graph, names, label, name=None):
+def bold(label):
+    return '<<B>{}</B>>'.format(label)
+
+
+def attach_to_parent(parent, graph, names, label, name=None, **style):
     node_name = next(names) if name is None else name
-    node = graph.node(node_name, label=label)
+    node = graph.node(node_name, label=label, **style)
     graph.edge(parent, node_name)
     
 
@@ -104,7 +108,11 @@ def graphviz_add_children(ast_node, parent_node, graph, names, omit_docstrings=T
     for k, v in node_fields:
         if isinstance(v, ast.AST):
             node_name = next(names)
-            _attach_to_parent(label=v.__class__.__name__, name=node_name)
+            _attach_to_parent(
+                label=bold(v.__class__.__name__), 
+                name=node_name,
+                fontcolor='blue',
+            )
             graphviz_add_children(v, node_name, graph, names, omit_docstrings)
         
         elif isinstance(v, list):
@@ -112,33 +120,51 @@ def graphviz_add_children(ast_node, parent_node, graph, names, omit_docstrings=T
                 v = strip_docstring(v)
             for item in v:
                 if isinstance(item, ast.AST):
-                    pass
+                    node_name = next(names)
+                    _attach_to_parent(
+                        label=bold(item.__class__.__name__), 
+                        name=node_name,
+                        fontcolor='blue',
+                    )
+                    graphviz_add_children(item, node_name, graph, names, omit_docstrings)
                 else:
-                    pass
-            #fields.extend(
-            #    nltk_treestring(item)
-            #    if isinstance(item, ast.AST)
-            #    else str(item)
-            #    for item in v
-            #)
+                    _attach_to_parent(
+                        label=str(item), 
+                        fontcolor='green',
+                    )
             
         elif isinstance(v, _basestring):
-            _attach_to_parent(label='"{}"'.format(v))
+            _attach_to_parent(
+                label='"{}"'.format(v), 
+                fontcolor='green',
+            )
                 
         elif v is not None:
-            _attach_to_parent(label=str(v))
-            
-    if not node_fields:
-        return
-        _attach_to_parent(label=ast_node.__class__.__name__)
+            _attach_to_parent(
+                label=str(v), 
+                fontcolor='green',
+            )
 
 
 def graphviz_graph(node, omit_docstrings=True):
-    graph = graphviz.Graph(format='svg')
+    graph = graphviz.Graph(
+        format='svg',
+    )
     names = (str(x) for x in itertools.count())
     root_name = next(names)
-    root = graph.node(root_name, label=node.__class__.__name__)
+    root = graph.node(
+        root_name, 
+        label=bold(node.__class__.__name__),
+        fontcolor='blue',
+        fontname='courier',
+    )
     graphviz_add_children(node, root_name, graph, names, omit_docstrings)
+    
+    graph.node_attr.update(dict(
+        fontname='Courier',
+        shape='plaintext',
+    ))
+    
     return graph
 
 
