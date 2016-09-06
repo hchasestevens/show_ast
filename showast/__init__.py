@@ -26,6 +26,12 @@ try:
 except NameError:
     _basestring = str
 
+try:
+    reduce
+except NameError:
+    from functools import reduce
+    
+    
     
 __all__ = ['show_ast', 'show_source', 'Settings']
     
@@ -90,10 +96,12 @@ def bold(label):
 def attach_to_parent(parent, graph, names, label, name=None, **style):
     node_name = next(names) if name is None else name
     node = graph.node(node_name, label=label, **style)
-    graph.edge(parent, node_name)
+    graph.edge(parent, node_name, sametail='t{}'.format(parent))
     
 
-def graphviz_add_children(ast_node, parent_node, graph, names, omit_docstrings=True):
+def graphviz_add_children(ast_node, parent_node, graph, names, 
+                          omit_docstrings=True, terminal_color='#008040', nonterminal_color='#004080',
+                         ):
     node_fields = zip(
         ast_node._fields, 
         (getattr(ast_node, attr) for attr in ast_node._fields)
@@ -111,9 +119,9 @@ def graphviz_add_children(ast_node, parent_node, graph, names, omit_docstrings=T
             _attach_to_parent(
                 label=bold(v.__class__.__name__), 
                 name=node_name,
-                fontcolor='blue',
+                fontcolor=nonterminal_color,
             )
-            graphviz_add_children(v, node_name, graph, names, omit_docstrings)
+            graphviz_add_children(v, node_name, graph, names, omit_docstrings, terminal_color, nonterminal_color)
         
         elif isinstance(v, list):
             if func_or_class and omit_docstrings and k == 'body':
@@ -124,26 +132,45 @@ def graphviz_add_children(ast_node, parent_node, graph, names, omit_docstrings=T
                     _attach_to_parent(
                         label=bold(item.__class__.__name__), 
                         name=node_name,
-                        fontcolor='blue',
+                        fontcolor=nonterminal_color,
                     )
-                    graphviz_add_children(item, node_name, graph, names, omit_docstrings)
+                    graphviz_add_children(item, node_name, graph, names, omit_docstrings, terminal_color, nonterminal_color)
                 else:
                     _attach_to_parent(
                         label=str(item), 
-                        fontcolor='green',
+                        fontcolor=terminal_color,
                     )
             
         elif isinstance(v, _basestring):
             _attach_to_parent(
                 label='"{}"'.format(v), 
-                fontcolor='green',
+                fontcolor=terminal_color,
             )
                 
         elif v is not None:
             _attach_to_parent(
                 label=str(v), 
-                fontcolor='green',
+                fontcolor=terminal_color,
             )
+            
+    if not node_fields:
+        # parent node ended up being a terminal
+        parent_node_num = int(parent_node)
+        for i, node in enumerate(graph.body[int(parent_node_num):]):  # will be at its own position or later
+            if node.strip().startswith('{} '.format(parent_node)):
+                break
+        else:
+            raise KeyError("Could not find parent in graph.")
+        replacements = {
+            nonterminal_color: terminal_color,
+            '<<B>': '',
+            '</B>>': '',
+        }
+        graph.body[i + parent_node_num] = reduce(
+            lambda s, (substr, replacement): s.replace(substr, replacement),
+            replacements.items(),
+            node,
+        )
 
 
 def graphviz_graph(node, omit_docstrings=True):
@@ -155,14 +182,15 @@ def graphviz_graph(node, omit_docstrings=True):
     root = graph.node(
         root_name, 
         label=bold(node.__class__.__name__),
-        fontcolor='blue',
-        fontname='courier',
+        fontcolor='#004080',
     )
     graphviz_add_children(node, root_name, graph, names, omit_docstrings)
     
     graph.node_attr.update(dict(
         fontname='Courier',
-        shape='plaintext',
+        shape='none',
+        height='0.25',
+        fixedsize='true',
     ))
     
     return graph
