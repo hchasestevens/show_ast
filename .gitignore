@@ -137,3 +137,6 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+*.pyproj
+show_ast.sln
+*.suo
