@@ -3,20 +3,22 @@ from setuptools import setup
 setup(
     name='showast',
     packages=['showast'],
-    version='0.1.3',
+    version='0.2.0',
     description = 'IPython notebook plugin for visualizing abstract syntax trees.',
     license='MIT',
     author='H. Chase Stevens',
     author_email='chase@chasestevens.com',
     url='https://github.com/hchasestevens/show_ast',
     install_requires=[
-        'nltk',
-        'pillow',
         'ipython',
+        'graphviz',
     ],
-    keywords='ipython jupyter notebook ast asts',
+    extras_require={
+        'nltk': ['nltk', 'pillow'],
+    },
+    keywords='ipython jupyter notebook ast asts graphing visualization syntax',
     classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
+        'Development Status :: 3 - Alpha',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',

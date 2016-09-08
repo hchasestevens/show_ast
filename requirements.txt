@@ -1,3 +1,2 @@
-nltk
-pillow
+graphviz
 ipython
