@@ -13,29 +13,35 @@ import showast
 %%showast
 print 1 + 2
 ```
-![print 1 + 2 AST](http://i.imgur.com/DCXbiOK.png)
+![print 1 + 2 AST](http://i.imgur.com/vK3XTkX.png)
 
 ```python
 from showast import show_source
 import antigravity
 show_source(antigravity)
 ```
-![antigravity module AST](http://i.imgur.com/nvnQBr3.png)
+![antigravity module AST](http://i.imgur.com/NJY6xhw.png)
 
 Installation
 -------------
 ```
-easy_install showast
+pip install showast
 ```
 
-showast has the following dependencies:
+showast has the following Python dependencies:
 ```
 ipython
+graphviz
+```
+
+You will also need to have [Graphviz](http://www.graphviz.org/Download..php) installed.
+
+Use of the alternative nltk-based rendering engine requires the following packages:
+```
 nltk
 pillow
 ```
-
-Additionally, you will need to have [Ghostscript](http://ghostscript.com/download/gsdnld.html) installed.
+When using this option, you will additionally need to have [Ghostscript](http://ghostscript.com/download/gsdnld.html) installed.
 
 Contacts
 --------
