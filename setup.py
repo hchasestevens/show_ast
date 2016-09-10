@@ -2,8 +2,8 @@ from setuptools import setup
  
 setup(
     name='showast',
-    packages=['showast'],
-    version='0.2.0',
+    packages=['showast', 'showast.rendering', 'showast.util',],
+    version='0.2.4',
     description = 'IPython notebook plugin for visualizing abstract syntax trees.',
     license='MIT',
     author='H. Chase Stevens',
