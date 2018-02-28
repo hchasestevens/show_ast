@@ -1,4 +1,7 @@
 # showast
+[![PyPI version](https://badge.fury.io/py/showast.svg)](https://badge.fury.io/py/showast)
+![Liberapay receiving](https://img.shields.io/liberapay/receives/hchasestevens.svg)
+
 An IPython/Jupyter notebook plugin for visualizing abstract syntax trees.
 
 Example usage
