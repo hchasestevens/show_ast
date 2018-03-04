@@ -1,6 +1,6 @@
 # showast
 [![PyPI version](https://badge.fury.io/py/showast.svg)](https://badge.fury.io/py/showast)
-![Liberapay receiving](https://img.shields.io/liberapay/receives/hchasestevens.svg)
+[![Liberapay receiving](https://img.shields.io/liberapay/receives/hchasestevens.svg)](https://liberapay.com/hchasestevens/)
 
 An IPython/Jupyter notebook plugin for visualizing abstract syntax trees.
 
