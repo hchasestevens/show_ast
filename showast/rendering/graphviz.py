@@ -14,6 +14,8 @@ from IPython.display import SVG
 
 from showast.asts import recurse_through_ast
 
+_LOCATION_ATTRS = [('lineno', 'col_offset'), ('end_lineno', 'end_col_offset')]
+
 
 def _bold(label):
     return '<<B>{}</B>>'.format(label)
@@ -21,21 +23,33 @@ def _bold(label):
 
 def _attach_to_parent(parent, graph, names, label, name=None, **style):
     node_name = next(names) if name is None else name
-    node = graph.node(node_name, label=label, **style)
+    graph.node(node_name, label=label, **style)
     if parent is not None:
         graph.edge(parent, node_name, sametail='t{}'.format(parent))
 
 
-def handle_ast(node, parent_node, graph, names, omit_docstrings, terminal_color, nonterminal_color):
+def _found_locations(node):
+    return any(hasattr(node, a) for loc in _LOCATION_ATTRS for a in loc)
+
+
+def _format_locations(node, template, missing_placeholder=''):
+    begin, end = [[getattr(node, a, missing_placeholder) for a in loc] for loc in _LOCATION_ATTRS]
+    return template.format(begin=begin, end=end)
+
+
+def handle_ast(node, parent_node, graph, names, omit_docstrings, terminal_color, nonterminal_color, omit_location_info, locations_format):
     attach_to_parent = partial(
         _attach_to_parent,
         graph=graph,
         names=names,
     )
     node_name = next(names)
+    label = node.__class__.__name__
+    if not omit_location_info and _found_locations(node):
+        label = '"{} {}"'.format(label, _format_locations(node, locations_format))
     attach_to_parent(
         parent=parent_node,
-        label=_bold(node.__class__.__name__),
+        label=_bold(label),
         name=node_name,
         fontcolor=nonterminal_color,
     )
@@ -49,6 +63,8 @@ def handle_ast(node, parent_node, graph, names, omit_docstrings, terminal_color,
             omit_docstrings=omit_docstrings, 
             terminal_color=terminal_color, 
             nonterminal_color=nonterminal_color,
+            omit_location_info=omit_location_info,
+            locations_format=locations_format,
         ), 
         partial(
             handle_terminal, 
@@ -113,6 +129,8 @@ def render(node, settings):
         omit_docstrings=settings['omit_docstrings'],
         terminal_color=settings['terminal_color'],
         nonterminal_color=settings['nonterminal_color'],
+        omit_location_info=settings['omit_location_info'],
+        locations_format=settings['locations_format'],
     )
 
     graph.node_attr.update(dict(
