@@ -8,7 +8,7 @@ from IPython.core.magic import register_cell_magic
 from IPython.display import display
     
     
-__all__ = ['show_ast', 'show_source', 'Settings', 'Renderers',]
+__all__ = ['show_ast', 'show_source', 'show_text', 'Settings', 'Renderers',]
 
 
 RENDERING_PATH = os.path.join(os.path.dirname(__file__), 'rendering')
@@ -30,6 +30,8 @@ Settings = dict(
     # AST display options:
     omit_module=True,
     omit_docstrings=True,
+    omit_location_info=True,
+    locations_format="L{begin[0]}:{begin[1]}-L{end[0]}:{end[1]}",
 
     # Rendering engine is expected to expose "render" function
     renderer=Renderers.graphviz,
@@ -57,6 +59,10 @@ def showast(__, cell):
 
 def show_source(item, settings=Settings):
     src = inspect.getsource(item)
+    show_text(src, settings)
+
+
+def show_text(src, settings=Settings):
     try:
         module = ast.parse(src)
     except IndentationError:
@@ -69,4 +75,4 @@ def show_source(item, settings=Settings):
                 src.splitlines()
             )
         module = ast.parse(src)
-    show_ast(ast.parse(src), settings)
+    show_ast(module, settings)

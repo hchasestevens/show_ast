@@ -99,7 +99,7 @@ def _tree_image(tree, settings):
         yield '.temp.png'
     finally:
         for fname in ('.temp.ps', '.temp.png'):
-            with suppress(IOError, WindowsError):
+            with suppress(IOError, OSError):
                 os.remove(fname)
 
 
