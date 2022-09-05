@@ -16,11 +16,13 @@ from IPython.display import SVG
 from showast.asts import recurse_through_ast
 
 _LOCATION_ATTRS = [('lineno', 'col_offset'), ('end_lineno', 'end_col_offset')]
-
+_NEWLINE_SOURCE_CHAR = ';'
 
 def _bold(label):
     return '<<B>{}</B>>'.format(label)
 
+def _unparse(node):
+    return ast.unparse(node).replace('\n', _NEWLINE_SOURCE_CHAR)
 
 def _attach_to_parent(parent, graph, names, label, name=None, **style):
     node_name = next(names) if name is None else name
@@ -52,7 +54,7 @@ def handle_ast(node, parent_node, graph, names, omit_docstrings, terminal_color,
             label = '{} {}'.format(label, _format_locations(node, locations_format))
             wrap_quotes = True
         if not omit_source:
-            label = '{} <I>{}</I>'.format(label, ast.unparse(node))
+            label = '{} <I>{}</I>'.format(label, _unparse(node))
             wrap_quotes = True
         if wrap_quotes:
             label = "{}".format(label)
