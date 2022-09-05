@@ -61,6 +61,7 @@ def show_source(item, settings=Settings):
     src = inspect.getsource(item)
     show_text(src, settings)
 
+
 def show_text(src, settings=Settings):
     try:
         module = ast.parse(src)
