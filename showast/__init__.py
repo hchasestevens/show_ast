@@ -32,6 +32,7 @@ Settings = dict(
     omit_docstrings=True,
     omit_location_info=True,
     locations_format="L{begin[0]}:{begin[1]}-L{end[0]}:{end[1]}",
+    omit_source=True,
 
     # Rendering engine is expected to expose "render" function
     renderer=Renderers.graphviz,

@@ -2,6 +2,7 @@
 Rendering module for graphviz.
 """
 
+import ast
 import itertools
 from functools import partial
 try:
@@ -37,7 +38,7 @@ def _format_locations(node, template, missing_placeholder=''):
     return template.format(begin=begin, end=end)
 
 
-def handle_ast(node, parent_node, graph, names, omit_docstrings, terminal_color, nonterminal_color, omit_location_info, locations_format):
+def handle_ast(node, parent_node, graph, names, omit_docstrings, terminal_color, nonterminal_color, omit_location_info, locations_format, omit_source):
     attach_to_parent = partial(
         _attach_to_parent,
         graph=graph,
@@ -45,8 +46,17 @@ def handle_ast(node, parent_node, graph, names, omit_docstrings, terminal_color,
     )
     node_name = next(names)
     label = node.__class__.__name__
-    if not omit_location_info and _found_locations(node):
-        label = '"{} {}"'.format(label, _format_locations(node, locations_format))
+    if _found_locations(node):
+        wrap_quotes = False
+        if not omit_location_info:
+            label = '{} {}'.format(label, _format_locations(node, locations_format))
+            wrap_quotes = True
+        if not omit_source:
+            label = '{} <I>{}</I>'.format(label, ast.unparse(node))
+            wrap_quotes = True
+        if wrap_quotes:
+            label = "{}".format(label)
+
     attach_to_parent(
         parent=parent_node,
         label=_bold(label),
@@ -65,6 +75,7 @@ def handle_ast(node, parent_node, graph, names, omit_docstrings, terminal_color,
             nonterminal_color=nonterminal_color,
             omit_location_info=omit_location_info,
             locations_format=locations_format,
+            omit_source=omit_source,
         ), 
         partial(
             handle_terminal, 
@@ -131,6 +142,7 @@ def render(node, settings):
         nonterminal_color=settings['nonterminal_color'],
         omit_location_info=settings['omit_location_info'],
         locations_format=settings['locations_format'],
+        omit_source=settings['omit_source'],
     )
 
     graph.node_attr.update(dict(
