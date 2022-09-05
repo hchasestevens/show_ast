@@ -37,7 +37,7 @@ ipython
 graphviz
 ```
 
-You will also need to have [Graphviz](http://www.graphviz.org/Download..php) installed.
+You will also need to have [Graphviz](http://www.graphviz.org/download/) installed.
 
 Use of the alternative nltk-based rendering engine requires the following packages:
 ```
