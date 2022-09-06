@@ -49,15 +49,10 @@ def handle_ast(node, parent_node, graph, names, omit_docstrings, terminal_color,
     node_name = next(names)
     label = node.__class__.__name__
     if _found_locations(node):
-        wrap_quotes = False
         if not omit_location_info:
             label = '{} {}'.format(label, _format_locations(node, locations_format))
-            wrap_quotes = True
         if not omit_source:
             label = '{} <I>{}</I>'.format(label, _unparse(node))
-            wrap_quotes = True
-        if wrap_quotes:
-            label = "{}".format(label)
 
     attach_to_parent(
         parent=parent_node,
