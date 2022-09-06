@@ -16,7 +16,7 @@ from IPython.display import SVG
 from showast.asts import recurse_through_ast
 
 _LOCATION_ATTRS = [('lineno', 'col_offset'), ('end_lineno', 'end_col_offset')]
-_NEWLINE_SOURCE_CHAR = ';'
+_NEWLINE_SOURCE_CHAR = '\\n'
 
 def _bold(label):
     return '<<B>{}</B>>'.format(label)
