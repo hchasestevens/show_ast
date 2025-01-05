@@ -1,7 +1,7 @@
 import os
 import re
 import ast
-import imp
+import importlib
 import inspect
 
 from IPython.core.magic import register_cell_magic
@@ -44,10 +44,22 @@ def show_ast(module, settings=Settings):
         node = module.body[0]
     else:
         node = module
-    renderer = imp.load_module(
-        'renderer', 
-        *imp.find_module(*settings['renderer'])
-    )
+
+    module_name, path = settings['renderer']
+    
+    for dir in path:
+        filename = os.path.join(dir, module_name + '.py')
+        spec = importlib.util.spec_from_file_location(module_name, filename)
+        if spec is not None:
+            break
+
+    if spec is None:
+        raise ImportError(repr(module_name) + " renderer not found"
+                          + " in " + repr(path))
+
+    renderer = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(renderer)
+
     display(renderer.render(node, settings))
 
 
