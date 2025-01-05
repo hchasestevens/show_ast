@@ -19,7 +19,7 @@ def recurse_through_ast(node, handle_ast, handle_terminal, handle_fields, handle
     
     node_fields = zip(
         node._fields,
-        (getattr(node, attr) for attr in node._fields)
+        (getattr(node, attr, "") for attr in node._fields)
     )
     field_results = []
     for field_name, field_value in node_fields:
